@@ -19,6 +19,29 @@
     return [].slice.call(list)
   }
 
+  (function () {
+    var checkbox = document.getElementById('flexCheckIndeterminate')
+
+    if (!checkbox) {
+      return
+    }
+
+    checkbox.indeterminate = true
+  })()
+
+  makeArray(document.querySelectorAll('.js-sidenav-group'))
+    .forEach(function (sidenavGroup) {
+      var groupHasLinks = Boolean(sidenavGroup.querySelector('li'))
+      var groupLink = sidenavGroup.querySelector('a')
+
+      if (groupHasLinks) {
+        groupLink.addEventListener('click', function (e) {
+          e.preventDefault()
+          e.target.parentNode.classList.toggle('active')
+        }, true)
+      }
+    })
+
   // Tooltip and popover demos
   makeArray(document.querySelectorAll('.tooltip-demo'))
     .forEach(function (tooltip) {
@@ -83,16 +106,15 @@
   }
 
   // Activate animated progress bar
-  makeArray(document.querySelectorAll('.bd-toggle-animated-progress > .progress-bar-striped'))
-    .forEach(function (progressBar) {
-      progressBar.addEventListener('click', function () {
-        if (progressBar.classList.contains('progress-bar-animated')) {
-          progressBar.classList.remove('progress-bar-animated')
-        } else {
-          progressBar.classList.add('progress-bar-animated')
-        }
-      })
+  var btnToggleAnimatedProgress = document.getElementById('btnToggleAnimatedProgress')
+  if (btnToggleAnimatedProgress) {
+    btnToggleAnimatedProgress.addEventListener('click', function () {
+      btnToggleAnimatedProgress.parentNode
+        .querySelector('.progress-bar-striped')
+        .classList
+        .toggle('progress-bar-animated')
     })
+  }
 
   // Insert copy to clipboard button before .highlight
   var btnHtml = '<div class="bd-clipboard"><button type="button" class="btn-clipboard" title="Copy to clipboard">Copy</button></div>'
@@ -120,21 +142,19 @@
   })
 
   clipboard.on('success', function (e) {
-    var tooltipBtn = bootstrap.Tooltip._getInstance(e.trigger)
+    var tooltipBtn = bootstrap.Tooltip.getInstance(e.trigger)
 
-    e.trigger.setAttribute('title', 'Copied!')
-    tooltipBtn._fixTitle()
+    e.trigger.setAttribute('data-original-title', 'Copied!')
     tooltipBtn.show()
 
-    e.trigger.setAttribute('title', 'Copy to clipboard')
-    tooltipBtn._fixTitle()
+    e.trigger.setAttribute('data-original-title', 'Copy to clipboard')
     e.clearSelection()
   })
 
   clipboard.on('error', function (e) {
     var modifierKey = /Mac/i.test(navigator.userAgent) ? '\u2318' : 'Ctrl-'
     var fallbackMsg = 'Press ' + modifierKey + 'C to copy'
-    var tooltipBtn = bootstrap.Tooltip._getInstance(e.trigger)
+    var tooltipBtn = bootstrap.Tooltip.getInstance(e.trigger)
 
     e.trigger.setAttribute('title', fallbackMsg)
     tooltipBtn._fixTitle()
